@@ -1,0 +1,2 @@
+CREATE DATABASE `db`;
+GRANT ALL ON `db`.* TO api@'%' IDENTIFIED BY "api";

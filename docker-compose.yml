@@ -1,0 +1,28 @@
+version: "2.3"
+services:
+  db:
+    image: mysql:5.7
+    ports:
+      - 3306:3306
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: admin
+    volumes:
+      - ${PWD}/db:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: mysql -u root -padmin -e "show create database db"
+      retries: 20
+      start_period: 10s
+      interval: 5s
+
+  api:
+    build:
+      context: .
+      dockerfile: api/Dockerfile
+    environment:
+      DB_URL: mysql://api:api@db/db
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - 8080:8080
